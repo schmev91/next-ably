@@ -5,25 +5,26 @@ import { useEffect, useState } from "react";
 
 const Test = () => {
   const realtime = new Realtime({
+    key: process.env.ABLY_KEY,
     token:
-      "5Qk1BA.DCCkX93OuT4LM6uzeEpPS81IpLR3oLcocuN5D_Sp8IQ8FiDSaNLP2CPbjOs39ewp1MXPhVZILRmx0LDs1SKKfNg7I31d5qvewhUh56cE6G9Ki1eOIr-7_eeS4uosQ6QjJ",
+      "5Qk1BA.DJrXWM8maItgP-ro0g2v_4EwF7BxD8yk0jcP8o-Bz3tXjlVsEoV9pRilUwlvlXXhtfQ2YBb9fM65ZNd9VqkGt8OWiMZ3-1e0Lim78shHghVUVUbsDwfh3CO3jbjP4FiMm",
   });
 
-  const channel = realtime.channels.get("notification");
+  const channel = realtime.channels.get("public:notification");
 
   const [notifications, setNotifications] = useState<string[]>([]);
 
   useEffect(() => {
-    channel.subscribe("inw", (msg) => {
+    channel.subscribe("new-notification", (msg) => {
       // console.log("Message received: ", msg);
-      setNotifications([...notifications, msg.data]);
+      setNotifications([...notifications, msg.data.message]);
       console.log("Số lượng thông báo: ", notifications.length);
       console.log([...notifications, msg.data]);
     });
   });
 
   return (
-    <div className="flex flex-col w-96 font-bold">
+    <div className="flex flex-col gap-3 w-96 font-bold">
       {!notifications.length ? (
         <h1 className="text-3xl">Hiện chưa có thông báo</h1>
       ) : (
